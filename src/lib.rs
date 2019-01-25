@@ -37,7 +37,7 @@ pub fn get_ngram_counts<'a>(nbuf: &'a String) -> Vec<(&'a str, usize)> {
         }
     }
     let mut ngram_counts = Vec::from_iter(cmap);
-    ngram_counts.sort_by(|&(s1, _), &(s2, _)| s1.cmp(&s2));
+    ngram_counts.sort_unstable_by(|&(s1, _), &(s2, _)| s1.cmp(&s2));
     ngram_counts.sort_by(|&(_, c1), &(_, c2)| c2.cmp(&c1));
     ngram_counts
 }

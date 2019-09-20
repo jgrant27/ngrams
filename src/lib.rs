@@ -18,7 +18,7 @@ pub fn load_word_indexes(mmap: &Mmap) -> Vec<usize> {
     idxs
 }
 
-pub fn get_ngram_counts<'a>(idxs: &Vec<usize>, mmap: &'a Mmap) -> Vec<(String, usize)> {
+pub fn get_ngram_counts(idxs: &Vec<usize>, mmap: &Mmap) -> Vec<(String, usize)> {
     let mut cmap: HashMap<String, usize> = HashMap::new();
     for (n, _) in idxs.iter().enumerate() {
         let start: usize = idxs[n] + 1;
@@ -38,7 +38,7 @@ pub fn get_ngram_counts<'a>(idxs: &Vec<usize>, mmap: &'a Mmap) -> Vec<(String, u
     ngram_counts
 }
 
-pub fn get_top_counts<'a>(ngram_counts: &'a Vec<(String, usize)>) -> String {
+pub fn get_top_counts(ngram_counts: &Vec<(String, usize)>) -> String {
     let mut res: String = String::new();
     for (ngram, count) in ngram_counts.into_iter().take(TOP_LIMIT) {
         res.push_str(format!("{:?} {}\n", ngram, count).as_str());

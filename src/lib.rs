@@ -10,9 +10,13 @@ const SPACE: u8 = ' ' as u8;
 
 pub fn load_word_indexes(mmap: &Mmap) -> Vec<usize> {
     let mut idxs: Vec<usize> = Vec::new();
+    let mut last_idx = 0;
     for ind in 0..mmap.len() {
         if SPACE == mmap[ind] || '\n' as u8 == mmap[ind] {
-            idxs.push(ind);
+            if 0 == ind || ind - 1 != last_idx {
+                idxs.push(ind);
+                last_idx = ind;
+            }
         }
     }
     idxs
@@ -20,14 +24,15 @@ pub fn load_word_indexes(mmap: &Mmap) -> Vec<usize> {
 
 pub fn get_ngram_counts(idxs: &Vec<usize>, mmap: &Mmap) -> Vec<(String, usize)> {
     let mut cmap: HashMap<String, usize> = HashMap::new();
-    for (n, _) in idxs.iter().enumerate() {
-        let start: usize = idxs[n] + 1;
-        if n + NGRAM_LEN < idxs.len() - 1 {
-            let end: usize = idxs[n + NGRAM_LEN];
+    for n in 0..idxs.len() {
+        if n + NGRAM_LEN < idxs.len() {
+            let start = idxs[n] + 1;
+            let end = idxs[n + NGRAM_LEN];
             let ngram = std::str::from_utf8(&mmap[start..end]).unwrap()
                 .chars().filter(|ch| ch.is_alphabetic() || ' ' == *ch)
                 .collect::<String>().to_uppercase().trim().to_string();
-            if !ngram.is_empty() && NGRAM_LEN == ngram.split(' ').collect::<Vec<_>>().len() {
+            let cnt = ngram.chars().filter(|ch| ' ' == *ch).count() + 1;
+            if NGRAM_LEN == cnt {
                 *cmap.entry(ngram).or_insert(0) += 1;
             }
         }

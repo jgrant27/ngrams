@@ -1,8 +1,8 @@
-use std::collections::{HashMap};
+use std::collections::HashMap;
 use std::fs::File;
 use std::iter::FromIterator;
 
-use memmap::{MmapOptions, Mmap};
+use memmap::{Mmap, MmapOptions};
 
 const NGRAM_LEN: usize = 3;
 const TOP_LIMIT: usize = 100;
@@ -28,9 +28,14 @@ pub fn get_ngram_counts(idxs: &Vec<usize>, mmap: &Mmap) -> Vec<(String, usize)> 
         if n + NGRAM_LEN < idxs.len() {
             let start = idxs[n] + 1;
             let end = idxs[n + NGRAM_LEN];
-            let ngram = std::str::from_utf8(&mmap[start..end]).unwrap()
-                .chars().filter(|ch| ch.is_alphabetic() || ' ' == *ch)
-                .collect::<String>().to_uppercase().trim().to_string();
+            let ngram = std::str::from_utf8(&mmap[start..end])
+                .unwrap()
+                .chars()
+                .filter(|ch| ch.is_alphabetic() || ' ' == *ch)
+                .collect::<String>()
+                .to_uppercase()
+                .trim()
+                .to_string();
             let cnt = ngram.chars().filter(|ch| ' ' == *ch).count() + 1;
             if NGRAM_LEN == cnt {
                 *cmap.entry(ngram).or_insert(0) += 1;

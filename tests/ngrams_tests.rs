@@ -7,8 +7,8 @@ mod ngram_tests {
     #[test]
     fn from_path_test() {
         assert_eq!(
-            from_path("./text/1661.txt").unwrap().trim(),
-            fs::read_to_string("./text/1661_res.txt").unwrap().trim()
+           from_path("./text/1661.txt").unwrap().trim(),
+           fs::read_to_string("./text/1661_res.txt").unwrap().trim()
         );
         assert_eq!(
             from_path("./text/pg2009.txt").unwrap().trim(),

@@ -1,19 +1,22 @@
-use std::io::{self, BufRead, BufReader};
-use std::collections::{HashMap};
-use std::fs::File;
-use std::iter::FromIterator;
+use std::collections::HashMap;
 use std::fmt::Debug;
+use std::fs::File;
+use std::io::{self, BufRead, BufReader};
+use std::iter::FromIterator;
 
 const NGRAM_LEN: usize = 3;
 const TOP_LIMIT: usize = 100;
 const SPACE: char = ' ';
 
-pub fn load_words<T: Debug, R: Iterator<Item=Result<String, T>>>(lines: R) -> String {
+pub fn load_words<T: Debug, R: Iterator<Item = Result<String, T>>>(lines: R) -> String {
     let mut nbuf = String::new();
     lines.for_each(|line| {
         line.unwrap().split_whitespace().for_each(|word| {
-            let mut cword = word.chars().filter(|ch| ch.is_alphabetic())
-                .collect::<String>().to_uppercase();
+            let mut cword = word
+                .chars()
+                .filter(|ch| ch.is_alphabetic())
+                .collect::<String>()
+                .to_uppercase();
             cword.push(SPACE);
             if !cword.is_empty() {
                 nbuf.push_str(&cword);
@@ -26,7 +29,10 @@ pub fn load_words<T: Debug, R: Iterator<Item=Result<String, T>>>(lines: R) -> St
 
 pub fn get_ngram_counts<'a>(nbuf: &'a String) -> Vec<(&'a str, usize)> {
     let mut cmap: HashMap<&str, usize> = HashMap::new();
-    let ixs = nbuf.match_indices(SPACE).map(|(i, _)| i).collect::<Vec<usize>>();
+    let ixs = nbuf
+        .match_indices(SPACE)
+        .map(|(i, _)| i)
+        .collect::<Vec<usize>>();
     dbg!(ixs.len());
     for (n, _) in ixs.iter().enumerate() {
         let start = ixs[n] + 1;

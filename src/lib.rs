@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::iter::FromIterator;
 
-use memmap::{Mmap, MmapOptions};
+use memmap2::{Mmap, MmapOptions};
 
 const NGRAM_LEN: usize = 3;
 const TOP_LIMIT: usize = 100;
